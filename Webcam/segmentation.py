@@ -3,22 +3,13 @@ import cv2
 import numpy as np
 import mediapipe as mp
 import matplotlib.pyplot as plt
-from time import time, sleep
-import keyboard as kb
 from threading import Thread, Lock
 background_images = []
         # Specify the path of the folder which contains the background images.
-background_folder = './backgrounds'
+background_folder = './Webcam/backgrounds'
 class WebcamEffects:
 
-    is_running = False
-    is_active = False
-    is_single_thread = True
-    lock = None
-    state = None
-
     def __init__(self, bg_img=None, blur=0.95, thresh=0.3, display = False, method = None, path_to_imgs = './backgrounds'):
-        self.lock = Lock()
         self.mp_selfie_segmentation = mp.solutions.selfie_segmentation
         self.segment = self.mp_selfie_segmentation.SelfieSegmentation(0)
         self.bg_img = bg_img
@@ -26,12 +17,6 @@ class WebcamEffects:
         self.thresh = thresh
         self.display = display
         self.method = method
-
-    def user_kill_signal(self):
-        if kb.is_pressed('='):
-            self.stop()
-            return True
-        return False
 
     def modifyBackground(self, image, background_image = 255, blur = 95, threshold = 0.3, display = True, method='changeBackground'):
         '''
@@ -117,51 +102,6 @@ class WebcamEffects:
     def updateMethod(self, new_method):
         self.method = new_method
 
-    def run_single_thread(self):
-        while self.is_running:
-            try:
-                if self.user_kill_signal():
-                    break
-                self.Capture()
-            except Exception as e:
-                print(e)
-                pass
-
-    def start(self):
-        if not self.is_running:
-            self.is_running = True
-            self.start_time = time()
-
-            #mt = Thread(target=self.monitor_toggle_actions)
-            #mt.start()
-
-            if self.is_single_thread:
-                t = Thread(target=self.run_single_thread)
-                t.start()
-                #self.run_single_thread()
-            else:
-                t = Thread(target=self.run)
-                t.start()
-
-    def stop(self):
-        self.lock.acquire()
-        self.is_running = False
-        self.is_active = False
-        self.lock.release()
-    
-    def update(self, frame):
-        self.lock.acquire()
-        self.frame = frame
-        self.lock.release()
-
-    def is_active(self):
-        active = 0
-        self.lock.acquire()
-        active = self.is_active
-        self.lock.release()
-        return active
-
-
     def Capture(self, frame, choice):
         # Initialize a list to store the background images.
         
@@ -177,14 +117,9 @@ class WebcamEffects:
         # Initialize a variable to store the index of the background image.
         bg_img_index = 0
         
-        # Initialize a variable to store the time of the previous frame.
-        time1 = 0
-        # Iterate until the webcam is accessed successfully.
-                
-            # Read a frame.
-            
         if self.method == 'stopTime':
             pass
+        
         else:# Check if frame is not read properly.
             
                 # Flip the frame horizontally for natural (selfie-view) visualization.
@@ -194,62 +129,3 @@ class WebcamEffects:
                                                 threshold = 0.3, display = False, method=choice)
                 
             return output_frame
-            #fused_frame, _ = self.modifyBackground(frame, background_image = [], threshold = 0.5, display = False, method = 'boxFilter')
-            # Set the time for this frame to the current time.
-            '''time2 = time()
-            
-            # Check if the difference between the previous and this frame time &gt; 0 to avoid division by zero.
-            if (time2 - time1) > 0:
-            
-                # Calculate the number of frames per second.
-                frames_per_second = 1.0 / (time2 - time1)
-                
-                # Write the calculated number of frames per second on the frame. 
-                cv2.putText(output_frame, 'fps: {}'.format(int(frames_per_second)), (10, 30),cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 3)
-            
-            # Update the previous frame time to this frame time.
-            # As this frame will become previous frame in next iteration.
-            time1 = time2
-            
-            # Display the frame with changed background.
-            cv2.imshow('Video', output_frame)
-
-        
-        # Wait until a key is pressed.
-        # Retreive the ASCII code of the key pressed
-        k = cv2.waitKey(10) & 0xFF
-        
-        # Check if 'ESC' is pressed.
-        if (k == 27):
-            
-            # Break the loop.
-            self.stop()
-            break
-        elif (k == ord('q')):
-            self.updateMethod('boxFilter')
-
-        elif (k == ord('w')):
-            self.updateMethod('blurBackground')
-
-        elif (k == ord('e')):
-            self.updateMethod('desatureBackground')
-        
-        elif (k == ord('r')):
-            self.updateMethod('stopTime')
-
-        elif (k == ord('t')):
-            self.updateMethod('None')
-
-        elif (k == ord('b')):
-            self.updateMethod('changeBackground')
-            bg_img_index = bg_img_index + 1  
-            '''
-        
-
-'''      
-def main():
-    c = WebcamEffects(method='blurBackground')
-    c.start()
-
-if __name__ == '__main__':
-    main()'''

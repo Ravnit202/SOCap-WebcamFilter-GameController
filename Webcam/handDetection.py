@@ -1,19 +1,9 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-import pydirectinput
-from time import time, sleep
-import random
-import keyboard as kb
-from threading import Thread, Lock
+
 
 class HandDetection:
-
-    is_running = False
-    is_active = False
-    is_single_thread = True
-    lock = None
-    state = None
 
     def __init__(self, joint_list=[[4,8]]):
         self.mp_drawing = mp.solutions.drawing_utils
@@ -22,12 +12,6 @@ class HandDetection:
         self.joint_list = joint_list 
         self.choice = None
 
-    def user_kill_signal(self):
-        if kb.is_pressed('='):
-            self.stop()
-            return True
-        return False
-    
     def draw_left_hand_values(self, image, results, joint_list):
         landmarks = results.multi_hand_landmarks
         # Loop through hands
@@ -104,69 +88,11 @@ class HandDetection:
                 
         return output
 
-    def pressKey(self, key:str):
-        pydirectinput.keyDown(key)
-        sleep(self.pickDelay())
-        pydirectinput.keyUp(key)
-
-    def pickDelay(self):
-        out = random.randint(0,2)
-        if out == 0:
-            return 0.2
-        elif out == 1:
-            return 0.3
-        elif out == 2:
-            return 0.5
-
     def updateChoice(self, choice):
         self.choice = choice
  
     def getChoice(self):
         return self.choice
-
-    def run_single_thread(self):
-        while self.is_running:
-            try:
-                if self.user_kill_signal():
-                    break
-                self.startCapture()
-            except Exception as e:
-                print(e)
-                pass
-
-    def start(self):
-        if not self.is_running:
-            self.is_running = True
-            self.start_time = time()
-
-            #mt = Thread(target=self.monitor_toggle_actions)
-            #mt.start()
-
-            if self.is_single_thread:
-                t = Thread(target=self.run_single_thread)
-                t.start()
-                #self.run_single_thread()
-            else:
-                t = Thread(target=self.run)
-                t.start()
-
-    def stop(self):
-        self.lock.acquire()
-        self.is_running = False
-        self.is_active = False
-        self.lock.release()
-    
-    def update(self, frame):
-        self.lock.acquire()
-        self.frame = frame
-        self.lock.release()
-
-    def is_active(self):
-        active = 0
-        self.lock.acquire()
-        active = self.is_active
-        self.lock.release()
-        return active
 
     def detect(self, frame):
         with self.mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) as hands: 
@@ -229,11 +155,3 @@ class HandDetection:
                     #else:
                     #    self.updateChoice('None')
 
-'''
-def main():
-    print("Begining Hand Tracking...")
-    h_detector = HandDetection(joint_list=[[4,8],[4,12],[4,16],[4,20]])
-    h_detector.detect()
-
-if __name__ == '__main__':
-    main()'''
