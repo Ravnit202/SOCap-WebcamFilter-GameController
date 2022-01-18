@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 from time import time, sleep
 import keyboard as kb
 from threading import Thread, Lock
-
+background_images = []
+        # Specify the path of the folder which contains the background images.
+background_folder = './backgrounds'
 class WebcamEffects:
 
     is_running = False
@@ -33,17 +35,6 @@ class WebcamEffects:
 
     def modifyBackground(self, image, background_image = 255, blur = 95, threshold = 0.3, display = True, method='changeBackground'):
         '''
-        This function will replace, blur, desature or make the background transparent depending upon the passed arguments.
-        Args:
-            image: The input image with an object whose background is required to modify.
-            background_image: The new background image for the object in the input image.
-            threshold: A threshold value between 0 and 1 which will be used in creating a binary mask of the input image.
-            display: A boolean value that is if true the function displays the original input image and the resultant image 
-                    and returns nothing.
-            method: The method name which is required to modify the background of the input image.
-        Returns:
-            output_image: The image of the object from the input image with a modified background.
-            binary_mask_3: A binary mask of the input image. 
         '''
         # Convert the input image from BGR to RGB format.
         RGB_img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -131,7 +122,7 @@ class WebcamEffects:
             try:
                 if self.user_kill_signal():
                     break
-                self.startCapture()
+                self.Capture()
             except Exception as e:
                 print(e)
                 pass
@@ -171,20 +162,8 @@ class WebcamEffects:
         return active
 
 
-    def startCapture(self):
-        camera_video = cv2.VideoCapture(0)
-        
-        # Set width of the frames in the video stream.
-        camera_video.set(3, 1280)
-        
-        # Set height of the frames in the video stream.
-        camera_video.set(4, 720)
-        
+    def Capture(self, frame, choice):
         # Initialize a list to store the background images.
-        background_images = []
-        
-        # Specify the path of the folder which contains the background images.
-        background_folder = './backgrounds'
         
         # Iterate over the images in the background folder.
         for img_path in os.listdir(background_folder):
@@ -201,86 +180,76 @@ class WebcamEffects:
         # Initialize a variable to store the time of the previous frame.
         time1 = 0
         # Iterate until the webcam is accessed successfully.
-        while self.is_running:
                 
             # Read a frame.
-            ok, frame = camera_video.read()
-            if self.method == 'stopTime':
-                pass
-            else:# Check if frame is not read properly.
-                if not ok:
-                    
-                    # Continue to the next iteration to read the next frame.
-                    continue
+            
+        if self.method == 'stopTime':
+            pass
+        else:# Check if frame is not read properly.
             
                 # Flip the frame horizontally for natural (selfie-view) visualization.
-                frame = cv2.flip(frame, 1)
-
 
                 # Change the background of the frame.
-                output_frame,_ = self.modifyBackground(frame, background_image = background_images[bg_img_index % len(background_images)],
-                                                threshold = 0.3, display = False, method=self.method)
+            output_frame,_ = self.modifyBackground(frame, background_image = background_images[bg_img_index % len(background_images)],
+                                                threshold = 0.3, display = False, method=choice)
                 
-                #fused_frame, _ = self.modifyBackground(frame, background_image = [], threshold = 0.5, display = False, method = 'boxFilter')
-                # Set the time for this frame to the current time.
-                time2 = time()
-                
-                # Check if the difference between the previous and this frame time &gt; 0 to avoid division by zero.
-                if (time2 - time1) > 0:
-                
-                    # Calculate the number of frames per second.
-                    frames_per_second = 1.0 / (time2 - time1)
-                    
-                    # Write the calculated number of frames per second on the frame. 
-                    cv2.putText(output_frame, 'fps: {}'.format(int(frames_per_second)), (10, 30),cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 3)
-                
-                # Update the previous frame time to this frame time.
-                # As this frame will become previous frame in next iteration.
-                time1 = time2
-                
-                # Display the frame with changed background.
-                cv2.imshow('Video', output_frame)
-
+            return output_frame
+            #fused_frame, _ = self.modifyBackground(frame, background_image = [], threshold = 0.5, display = False, method = 'boxFilter')
+            # Set the time for this frame to the current time.
+            '''time2 = time()
             
-            # Wait until a key is pressed.
-            # Retreive the ASCII code of the key pressed
-            k = cv2.waitKey(10) & 0xFF
+            # Check if the difference between the previous and this frame time &gt; 0 to avoid division by zero.
+            if (time2 - time1) > 0:
             
-            # Check if 'ESC' is pressed.
-            if (k == 27):
+                # Calculate the number of frames per second.
+                frames_per_second = 1.0 / (time2 - time1)
                 
-                # Break the loop.
-                self.stop()
-                break
-            elif (k == ord('q')):
-                self.updateMethod('boxFilter')
-
-            elif (k == ord('w')):
-                self.updateMethod('blurBackground')
-
-            elif (k == ord('e')):
-                self.updateMethod('desatureBackground')
+                # Write the calculated number of frames per second on the frame. 
+                cv2.putText(output_frame, 'fps: {}'.format(int(frames_per_second)), (10, 30),cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 3)
             
-            elif (k == ord('r')):
-                self.updateMethod('stopTime')
+            # Update the previous frame time to this frame time.
+            # As this frame will become previous frame in next iteration.
+            time1 = time2
+            
+            # Display the frame with changed background.
+            cv2.imshow('Video', output_frame)
 
-            elif (k == ord('t')):
-                self.updateMethod('None')
-
-            elif (k == ord('b')):
-                self.updateMethod('changeBackground')
-                bg_img_index = bg_img_index + 1  
-                
         
-        # Release the VideoCapture Object.
-        camera_video.release()
+        # Wait until a key is pressed.
+        # Retreive the ASCII code of the key pressed
+        k = cv2.waitKey(10) & 0xFF
         
-        # Close the windows.
-        cv2.destroyAllWindows()
+        # Check if 'ESC' is pressed.
+        if (k == 27):
+            
+            # Break the loop.
+            self.stop()
+            break
+        elif (k == ord('q')):
+            self.updateMethod('boxFilter')
 
+        elif (k == ord('w')):
+            self.updateMethod('blurBackground')
+
+        elif (k == ord('e')):
+            self.updateMethod('desatureBackground')
+        
+        elif (k == ord('r')):
+            self.updateMethod('stopTime')
+
+        elif (k == ord('t')):
+            self.updateMethod('None')
+
+        elif (k == ord('b')):
+            self.updateMethod('changeBackground')
+            bg_img_index = bg_img_index + 1  
+            '''
+        
+
+'''      
 def main():
     c = WebcamEffects(method='blurBackground')
     c.start()
 
 if __name__ == '__main__':
-    main()
+    main()'''
