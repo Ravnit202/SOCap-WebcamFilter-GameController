@@ -17,7 +17,7 @@ def main():
         hand_detect.detect(frame)
 
         choice = hand_detect.getChoice()
-        
+
         if choice != 'No Key':
             inp.press(choice)
 

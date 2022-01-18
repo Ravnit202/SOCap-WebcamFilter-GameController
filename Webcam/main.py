@@ -14,14 +14,11 @@ def main():
     while not kb.is_pressed('='):
         ret, frame = cap.read()
 
-        #frame = cv2.flip(frame, 1)
+        frame = cv2.flip(frame, 1)
 
         hand_detect.detect(frame)
 
         choice = hand_detect.getChoice()
-
-        #print(f'Curr Choice: {choice}')
-        #print(f'Saved Choice: {saved_choice}')
 
         if(choice != None and choice != saved_choice):
             saved_choice = choice
@@ -31,13 +28,14 @@ def main():
         else:
             frame = wb_effect.Capture(frame, saved_choice)
 
+            
             cv2.imshow('frame', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     cap.release()
-    # Destroy all the windows
+
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
