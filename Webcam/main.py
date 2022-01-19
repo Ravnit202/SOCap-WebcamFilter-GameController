@@ -7,8 +7,7 @@ import cv2
 def main():
     hand_detect = HandDetection(joint_list=[[4,8],[4,12],[4,16],[4,20]])
     wb_effect = WebcamEffects()
-    #wb_effect.start()
-    #hand_detect.start()
+
     cap = cv2.VideoCapture(0)
     saved_choice = None
     while not kb.is_pressed('='):
