@@ -1,4 +1,4 @@
-from handDetection import HandDetection
+from gameHandDetection import HandDetection
 from finger import FingerDetector
 import keyboard as kb
 import pydirectinput as inp

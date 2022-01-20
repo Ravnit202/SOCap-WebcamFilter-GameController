@@ -1,4 +1,4 @@
-from handDetection import HandDetection
+from webcamHandDetection import HandDetection
 from segmentation import WebcamEffects
 import keyboard as kb
 import cv2
@@ -11,7 +11,7 @@ def main():
     cap = cv2.VideoCapture(0)
     saved_choice = None
     while not kb.is_pressed('='):
-        ret, frame = cap.read()
+        _, frame = cap.read()
 
         frame = cv2.flip(frame, 1)
 

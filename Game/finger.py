@@ -1,15 +1,12 @@
 import cv2
 import mediapipe
 import numpy
-import pyautogui
-import numpy as np
-from time import sleep
-
+import pydirectinput
 
 class FingerDetector:
 
 
-    wScr, hScr = pyautogui.size() 
+    wScr, hScr = pydirectinput.size() 
     pX, pY = 0, 0 
     cX, cY = 0, 0 
 
@@ -76,19 +73,10 @@ class FingerDetector:
                 cX = self.pX + (x3 - self.pX) / 4  # Stores previous x locations to update current x location
                 cY = self.pY + (y3 - self.pY) / 4  # Stores previous y locations to update current y location
 
-                pyautogui.moveTo(cX, cY)  # Function to move the mouse to the x3 and y3 values (wSrc inverts the direction)
+                pydirectinput.moveTo(int(cX), int(cY))  # Function to move the mouse to the x3 and y3 values (wSrc inverts the direction)
                 self.pX, self.pY = cX, cY  # Stores the current x and y location as previous x and y location for next loop
 
             if finger[1] == 0 and finger[0] == 1:  # Checks to see if the pointer finger is down and thumb finger is up
-                pyautogui.rightClick()
-                sleep(0.1)
+                pydirectinput.rightClick()
+                
         return
-'''if __name__ == "__main__":
-    s = FingerDetector()
-    cap = cv2.VideoCapture(0)
-    while True:
-        _, frame = cap.read()
-        s.fingerDetection(frame)
-        cv2.imshow('frame', frame)
-        if cv2.waitKey(1) & 0xFF == ord('='):
-            break'''

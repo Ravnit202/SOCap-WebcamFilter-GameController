@@ -1,9 +1,6 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-from time import time, sleep
-import random
-import keyboard as kb
 
 class HandDetection:
 
@@ -28,7 +25,7 @@ class HandDetection:
                 #c = np.array([hand.landmark[joint[2]].x, hand.landmark[joint[2]].y]) # Third coord
                 
                 dist = np.sqrt((b[1]-a[1])**2 + (b[0]-a[0])**2)
-                print(dist)
+
                 if(dist < 0.028):
                     if(i == 0):
                         #print(dist, 'j1')
@@ -140,13 +137,3 @@ class HandDetection:
                 else:
                     self.updateChoice('No Key')
         return image
-
-'''if __name__ == '__main__':
-    s = HandDetection(joint_list=[[4,8],[4,12],[4,16],[4,20]])
-    cap = cv2.VideoCapture(0)
-    while True:
-        _, frame = cap.read()
-        img = s.detect(frame)
-        cv2.imshow('frame', img)
-        if cv2.waitKey(1) & 0xFF == ord('='):
-            break'''

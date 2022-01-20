@@ -151,7 +151,7 @@ class HandDetection:
                     elif vals[2] is True:
                         self.updateChoice('boxFilter')
                     elif vals[3] is True:
-                        self.updateChoice('desaturateBackground')
+                        self.updateChoice('desatureBackground')
                     #else:
                     #    self.updateChoice('None')
 
