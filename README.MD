@@ -15,6 +15,7 @@ From here, you can use the 'Webcam' button to open your device's webcam and begi
 
 Additionally, you may use the 'Rebind' button to open this window:
 ![Rebind Window](images/screenshots/rebind_window.PNG "Rebind Window")
+
 Once open, you may enter keys in the order of Index finger, Middle finger, Ring finger, Pinky finger, Index + Middle finger, and Ring + Pinky finger.
 
 ## Usage
