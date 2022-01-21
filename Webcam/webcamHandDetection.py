@@ -14,44 +14,37 @@ class HandDetection:
 
     def draw_left_hand_values(self, image, results, joint_list):
         landmarks = results.multi_hand_landmarks
-        # Loop through hands
+
         for num, hand in enumerate(landmarks):
-            try:
-                handed = self.get_label(num, hand, results)
-                handed = handed[0].split(' ')[0]
-            except:
-                handed = None
 
             j1 = False
             j2 = False
             j3 = False
             j4 = False
 
-            #Loop through joint sets 
-            if handed is not None:
-                for i in range(len(joint_list)):
-                    
-                    a = np.array([hand.landmark[joint_list[i][0]].x, hand.landmark[joint_list[i][0]].y]) # First coord
-                    b = np.array([hand.landmark[joint_list[i][1]].x, hand.landmark[joint_list[i][1]].y]) # Second coord
-                    #c = np.array([hand.landmark[joint[2]].x, hand.landmark[joint[2]].y]) # Third coord
-                    
-                    dist = np.sqrt((b[1]-a[1])**2 + (b[0]-a[0])**2)
-                    if(dist < 0.025):
-                        if(i == 0):
-                            #print(dist, 'j1')
-                            j1 = True
-                        elif(i == 1):
-                            #print(dist, 'j2')
-                            j2 = True
-                        elif (i == 2):
-                            #print(dist, 'j3')
-                            j3 = True
-                        elif (i == 3):
-                            #print(dist, 'j4')
-                            j4 = True
+            for i in range(len(joint_list)):
+                
+                a = np.array([hand.landmark[joint_list[i][0]].x, hand.landmark[joint_list[i][0]].y]) # First coord
+                b = np.array([hand.landmark[joint_list[i][1]].x, hand.landmark[joint_list[i][1]].y]) # Second coord
+                #c = np.array([hand.landmark[joint[2]].x, hand.landmark[joint[2]].y]) # Third coord
+                
+                dist = np.sqrt((b[1]-a[1])**2 + (b[0]-a[0])**2)
+                if(dist < 0.025):
+                    if(i == 0):
+                        #print(dist, 'j1')
+                        j1 = True
+                    elif(i == 1):
+                        #print(dist, 'j2')
+                        j2 = True
+                    elif (i == 2):
+                        #print(dist, 'j3')
+                        j3 = True
+                    elif (i == 3):
+                        #print(dist, 'j4')
+                        j4 = True
 
-                    cv2.putText(image, str(round(dist, 4)), tuple(np.multiply(b, [640, 480]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+                cv2.putText(image, str(round(dist, 4)), tuple(np.multiply(b, [640, 480]).astype(int)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 
         return [j1, j2, j3, j4]
 
@@ -141,17 +134,17 @@ class HandDetection:
                     # Draw angles to image from joint list
                     vals = self.draw_left_hand_values(image, results, self.joint_list)
                     #self.get_position(results)
-                if l_hand is True:
-                    if vals[0] is True and vals[1] is True:
-                        self.updateChoice('stopTime')
-                    elif vals[0] is True:
-                        self.updateChoice('blurBackground')
-                    elif vals[1] is True:
-                        self.updateChoice('changeBackground')
-                    elif vals[2] is True:
-                        self.updateChoice('boxFilter')
-                    elif vals[3] is True:
-                        self.updateChoice('desatureBackground')
-                    #else:
-                    #    self.updateChoice('None')
+
+                if vals[0] is True and vals[1] is True:
+                    self.updateChoice('stopTime')
+                elif vals[0] is True:
+                    self.updateChoice('blurBackground')
+                elif vals[1] is True:
+                    self.updateChoice('changeBackground')
+                elif vals[2] is True:
+                    self.updateChoice('boxFilter')
+                elif vals[3] is True:
+                    self.updateChoice('desatureBackground')
+                #else:
+                #    self.updateChoice('None')
 

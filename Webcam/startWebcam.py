@@ -4,7 +4,10 @@ import keyboard as kb
 import cv2
 
 
+
+
 def main():
+
     hand_detect = HandDetection(joint_list=[[4,8],[4,12],[4,16],[4,20]])
     wb_effect = WebcamEffects()
 
