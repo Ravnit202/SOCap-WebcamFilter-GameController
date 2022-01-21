@@ -9,12 +9,12 @@ pip install -r requirements.txt
 ## Startup
 
 Once you have ran the SOCap.exe file, or the main.py file, you should see a window as such:
-![Main Window](../PYJAC/images/screenshots/main_window.png "Main Window")
+![Main Window](images/screenshots/main_window.PNG "Main Window")
 
 From here, you can use the 'Webcam' button to open your device's webcam and begin applying filters, or you may use the 'Game' button to open your device's webcam and start using your hands as controllers.
 
 Additionally, you may use the 'Rebind' button to open this window:
-![Rebind Window](../PYJAC/images/screenshots/rebind_window.png "Rebind Window")
+![Rebind Window](images/screenshots/rebind_window.PNG "Rebind Window")
 Once open, you may enter keys in the order of Index finger, Middle finger, Ring finger, Pinky finger, Index + Middle finger, and Ring + Pinky finger.
 
 ## Usage
