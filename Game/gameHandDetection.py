@@ -4,12 +4,13 @@ import numpy as np
 
 class HandDetection:
 
-    def __init__(self, joint_list=[[4,8]]):
+    def __init__(self, joint_list=[[4,8]], keys = ['q','w','e','r','f','d']):
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_drawing_styles = mp.solutions.drawing_styles
         self.mp_hands = mp.solutions.hands
         self.joint_list = joint_list 
         self.choice = None
+        self.keys = keys
     
     def draw_left_hand_values(self, image, hand, joint_list):
 
@@ -28,16 +29,12 @@ class HandDetection:
 
                 if(dist < 0.028):
                     if(i == 0):
-                        #print(dist, 'j1')
                         j1 = True
                     elif(i == 1):
-                        #print(dist, 'j2')
                         j2 = True
                     elif (i == 2):
-                        #print(dist, 'j3')
                         j3 = True
                     elif (i == 3):
-                        #print(dist, 'j4')
                         j4 = True
     
                 cv2.putText(image, str(round(dist, 4)), tuple(np.multiply(b, [640, 480]).astype(int)),
@@ -121,17 +118,17 @@ class HandDetection:
                     vals = self.draw_left_hand_values(image, l_hand, self.joint_list)
 
                     if vals[0] is True and vals[1] is True:
-                        self.updateChoice('d')
+                        self.updateChoice(self.keys[5])
                     elif vals[2] is True and vals[3] is True:
-                        self.updateChoice('f')
+                        self.updateChoice(self.keys[4])
                     elif vals[0] is True:
-                        self.updateChoice('q')
+                        self.updateChoice(self.keys[0])
                     elif vals[1] is True:
-                        self.updateChoice('w')
+                        self.updateChoice(self.keys[1])
                     elif vals[2] is True:
-                        self.updateChoice('e')
+                        self.updateChoice(self.keys[2])
                     elif vals[3] is True:
-                        self.updateChoice('r')
+                        self.updateChoice(self.keys[3])
                     else:
                         self.updateChoice('No Key')
                 else:

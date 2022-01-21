@@ -3,13 +3,20 @@ from finger import FingerDetector
 import keyboard as kb
 import pydirectinput as inp
 import cv2
+import sys
 
 
 def main():
-    hand_detect = HandDetection(joint_list=[[4,8],[4,12],[4,16],[4,20]])
+    if len(sys.argv) >= 1:
+        keys = []
+        for i in sys.argv[1:]:
+            keys.append(i)
+        hand_detect = HandDetection(joint_list=[[4,8],[4,12],[4,16],[4,20]], keys=keys)
+    else:
+        hand_detect = HandDetection(joint_list=[[4,8],[4,12],[4,16],[4,20]])
+
     finger = FingerDetector()
     cap = cv2.VideoCapture(0)
-
     while not kb.is_pressed('='):
         
         choice = None
