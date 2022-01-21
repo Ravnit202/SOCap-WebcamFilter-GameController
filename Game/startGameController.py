@@ -20,7 +20,7 @@ def main():
     while not kb.is_pressed('='):
         
         choice = None
-        ret, frame = cap.read()
+        _, frame = cap.read()
 
         #frame = cv2.flip(frame, 1)
         

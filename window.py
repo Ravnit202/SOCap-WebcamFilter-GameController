@@ -9,7 +9,7 @@ class MainWindow(Frame):
         self.keys = keys
 
         window.geometry("852x315+500+300")
-        self.window.overrideredirect(True)
+        self.window.overrideredirect(True) #Override the title bar
         self.window.configure(bg = "#ffffff")
 
         self.canvas = Canvas(
@@ -76,15 +76,17 @@ class MainWindow(Frame):
         self.close_label.bind("<Button-1>", self.quitter)
 
     def startWebcamEffects(self):
+        self.window.wm_attributes("-topmost", 0) #Ensure window is behind opencv window
         os.system("python ./Webcam/startWebcam.py")
-        self.window.wm_attributes("-topmost", 1)
+        self.window.wm_attributes("-topmost", 1) #Bring window back to the front
 
     def startGameController(self):
+        self.window.wm_attributes("-topmost", 0) #Ensure window is behind opencv window
         param_string = ''
         for i in self.keys:
             param_string += i + " "
 
-        os.system(f"python ./Game/startGameController.py {param_string}")
+        os.system(f"python ./Game/startGameController.py {param_string}") #Bring window back to the front
         self.window.wm_attributes("-topmost", 1)
 
     def move_app(self,e):
@@ -106,7 +108,7 @@ class PopupWindow(Frame):
         self.mainWindow = mainWindow
         self.keys = keys
         self.window.geometry("300x250+900+350")     
-        self.window.overrideredirect(True)
+        self.window.overrideredirect(True) #Override the title bar
         self.window.configure(bg = "#ffffff")
         self.canvas = Canvas(
             window,
@@ -138,7 +140,6 @@ class PopupWindow(Frame):
         self.popup_box_img = self.canvas.create_image(
             149.5, 201.5,
             image = self.popup_box_img)
-
 
         self.title_bar = Frame(window, bg="#292929", relief="raised", bd=0)
         self.title_bar.pack(side=TOP, fill=BOTH)

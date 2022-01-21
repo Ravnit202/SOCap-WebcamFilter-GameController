@@ -23,11 +23,10 @@ class HandDetection:
                 
                 a = np.array([hand.landmark[joint_list[i][0]].x, hand.landmark[joint_list[i][0]].y]) # First coord
                 b = np.array([hand.landmark[joint_list[i][1]].x, hand.landmark[joint_list[i][1]].y]) # Second coord
-                #c = np.array([hand.landmark[joint[2]].x, hand.landmark[joint[2]].y]) # Third coord
-                
-                dist = np.sqrt((b[1]-a[1])**2 + (b[0]-a[0])**2)
 
-                if(dist < 0.028):
+                dist = np.sqrt((b[1]-a[1])**2 + (b[0]-a[0])**2) #Calculate the distance between a fingertip and the thumb
+
+                if(dist < 0.028): #If the distance between a fingertip and thumb is below 0.028, we know the action has been performed
                     if(i == 0):
                         j1 = True
                     elif(i == 1):
@@ -36,7 +35,7 @@ class HandDetection:
                         j3 = True
                     elif (i == 3):
                         j4 = True
-    
+
                 cv2.putText(image, str(round(dist, 4)), tuple(np.multiply(b, [640, 480]).astype(int)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 
@@ -44,6 +43,7 @@ class HandDetection:
 
 
     def get_label(self, index, hand, results):
+
         output = None
         for _, classification in enumerate(results.multi_handedness):
             if classification.classification[0].index == index:
@@ -70,27 +70,23 @@ class HandDetection:
 
     def detect(self, frame):
         with self.mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) as hands: 
-                #frame = cv2.flip(frame, 1)
                 # BGR 2 RGB
                 image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 
-                # Flip on horizontal
+                # Flip Horizontally
                 image = cv2.flip(image, 1)
                 
-                # Set flag
                 image.flags.writeable = False
                 
                 # Detections
                 results = hands.process(image)
                 
-                # Set flag to true
                 image.flags.writeable = True
                 
                 # RGB 2 BGR
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
                 
                 # Detections
-                #print(results)
                 l_hand = None
                 r_hand = None
                 vals = [False, False, False, False]
@@ -101,7 +97,7 @@ class HandDetection:
                                                 self.mp_drawing.DrawingSpec(color=(121, 22, 76), thickness=2, circle_radius=4),
                                                 self.mp_drawing.DrawingSpec(color=(250, 44, 250), thickness=2, circle_radius=2),
                                                 )
-                        # Render left or right detection
+                        # Differentiate between left and right hands
                         if self.get_label(num, hand, results):
                             text, coord = self.get_label(num, hand, results)
                             h = text.split(' ')
@@ -113,7 +109,7 @@ class HandDetection:
                             
                             cv2.putText(image, text, coord, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
-                    # Draw angles to image from joint list
+                # Draw angles to image from joint list if the left hand is up
                 if(l_hand):
                     vals = self.draw_left_hand_values(image, l_hand, self.joint_list)
 
