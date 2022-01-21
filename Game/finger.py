@@ -6,26 +6,27 @@ import pydirectinput
 class FingerDetector:
 
 
-    wScr, hScr = pydirectinput.size() 
+    wScr, hScr = pydirectinput.size() #Get the current screen resolution
     pX, pY = 0, 0 
     cX, cY = 0, 0 
 
     def __init__(self):
+        #Load the mediapipe libraries/solutions
         self.initHand = mediapipe.solutions.hands
         self.mainHand = self.initHand.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
         self.draw = mediapipe.solutions.drawing_utils
+
         self.fingerTips = []
         self.img = None
 
     def handLandmarks(self, colorImg):
+        landmarkList = []
 
-        landmarkList = []  # Default values if no landmarks are tracked
-
-        landmarkPositions = self.mainHand.process(colorImg)  # Object for processing the video input
+        landmarkPositions = self.mainHand.process(colorImg)  # Process the given image
         landmarkCheck = landmarkPositions.multi_hand_landmarks 
 
-        if landmarkCheck:  # Checks if landmarks are tracked
-            for index, hand in enumerate(landmarkCheck):  # Landmarks for each hand
+        if landmarkCheck:  # Checks if landmarks exist
+            for index, hand in enumerate(landmarkCheck):  # differentiate by hand
                 for index, landmark in enumerate(hand.landmark): 
                     self.draw.draw_landmarks(self.img, hand, self.initHand.HAND_CONNECTIONS)  
                     h, w, c = self.img.shape 
@@ -35,16 +36,16 @@ class FingerDetector:
         return landmarkList
 
     def fingers(self, landmarks):
-        fingerTips = []  # To store 4 sets of 1s or 0s
-        tipIds = [4, 8, 12, 16, 20]  # Indexes for the tips of each finger
+        fingerTips = []
+        tipIds = [4, 8, 12, 16, 20]  #Values for each fingertip
         
-        # Check if thumb is up
+        #Check if the thumb is up
         if landmarks[tipIds[0]][1] > self.lmList[tipIds[0] - 1][1]:
             fingerTips.append(1)
         else:
             fingerTips.append(0)
         
-        # Check if fingers are up except the thumb
+        #Check if fingers are up and the thumb is down
         for id in range(1, 5):
             if landmarks[tipIds[id]][2] < landmarks[tipIds[id] - 3][2]:  # Checks to see if the tip of the finger is higher than the joint
                 fingerTips.append(1)
@@ -62,21 +63,19 @@ class FingerDetector:
         self.lmList = self.handLandmarks(imgRGB)
 
         if len(self.lmList) > 12:
-            x1, y1 = self.lmList[8][1:]  # Gets index 8s x and y values (skips index value because it starts from 1)
-            x2, y2 = self.lmList[12][1:]  # Gets index 12s x and y values (skips index value because it starts from 1)
-            finger = self.fingers(self.lmList)  # Calling the fingers function to check which fingers are up
-            
-            if finger[1] == 1 and finger[2] == 0:  # Checks to see if the pointing finger is up and thumb finger is down
+            x1, y1 = self.lmList[8][1:]  
+            finger = self.fingers(self.lmList)  
+            if finger[1] == 1 and finger[2] == 0:  
                 x3 = numpy.interp(x1, (75, 720 - 75), (75, self.wScr))  # Converts the width of the window relative to the screen width
                 y3 = numpy.interp(y1, (75, 560 - 75), (75, self.hScr))  # Converts the height of the window relative to the screen height
                 
-                cX = self.pX + (x3 - self.pX) / 4  # Stores previous x locations to update current x location
-                cY = self.pY + (y3 - self.pY) / 4  # Stores previous y locations to update current y location
+                cX = self.pX + (x3 - self.pX) / 7  # Smooth out the mouse x movement
+                cY = self.pY + (y3 - self.pY) / 7  # Smooth out the mouse y movement
 
-                pydirectinput.moveTo(int(cX), int(cY))  # Function to move the mouse to the x3 and y3 values (wSrc inverts the direction)
-                self.pX, self.pY = cX, cY  # Stores the current x and y location as previous x and y location for next loop
+                pydirectinput.moveTo(int(cX), int(cY))  #Move the mouse using pydirectinput
+                self.pX, self.pY = cX, cY  # Save the current x and y values
 
-            if finger[1] == 0 and finger[0] == 1:  # Checks to see if the pointer finger is down and thumb finger is up
+            if finger[1] == 0 and finger[0] == 1:  # Checks to see if the pointer finger is down and the thumb finger is up
                 pydirectinput.rightClick()
                 
         return
