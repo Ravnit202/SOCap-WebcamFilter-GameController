@@ -42,7 +42,7 @@ class HandDetection:
         return [j1, j2, j3, j4]
 
 
-    def get_label(self, index, hand, results):
+    def label_hand(self, index, hand, results):
 
         output = None
         for _, classification in enumerate(results.multi_handedness):
@@ -98,8 +98,8 @@ class HandDetection:
                                                 self.mp_drawing.DrawingSpec(color=(250, 44, 250), thickness=2, circle_radius=2),
                                                 )
                         # Differentiate between left and right hands
-                        if self.get_label(num, hand, results):
-                            text, coord = self.get_label(num, hand, results)
+                        if self.label_hand(num, hand, results):
+                            text, coord = self.label_hand(num, hand, results)
                             h = text.split(' ')
                             if h[0] == "Left":
                                 l_hand = hand

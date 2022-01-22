@@ -67,6 +67,7 @@ class WebcamEffects:
         elif method == 'cloneUser':
             M = np.float32([[1, 0, -400], [0, 1, -0]])
 
+            # Using warpAffine to move the segmented part to the left
             shifted = cv2.warpAffine(image, M, (image.shape[1], image.shape[0]))
             shifted_mask = cv2.warpAffine(segmented, M, (segmented.shape[1], segmented.shape[0]))
             mask_3 = np.stack((shifted_mask,)*3, axis=-1) > threshold
@@ -87,7 +88,7 @@ class WebcamEffects:
 
         # Change the background of the frame.
         output_frame,_ = self.applyFilter(frame, background_image = background_images[self.bg_img_index % len(background_images)],
-                                            threshold = 0.30, method=choice)
+                                            threshold = 0.40, method=choice)
 
         self.prev_choice = choice #Store the previous choice
 
