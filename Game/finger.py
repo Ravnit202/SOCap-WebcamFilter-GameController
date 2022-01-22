@@ -2,7 +2,6 @@ import cv2
 import mediapipe
 import numpy
 import pydirectinput
-
 class FingerDetector:
 
 
@@ -69,13 +68,13 @@ class FingerDetector:
                 x3 = numpy.interp(x1, (75, 720 - 75), (75, self.wScr))  # Converts the width of the window relative to the screen width
                 y3 = numpy.interp(y1, (75, 560 - 75), (75, self.hScr))  # Converts the height of the window relative to the screen height
                 
-                cX = self.pX + (x3 - self.pX) / 7  # Smooth out the mouse x movement
-                cY = self.pY + (y3 - self.pY) / 7  # Smooth out the mouse y movement
+                cX = self.pX + (x3 - self.pX) /2 # Smooth out the mouse x movement
+                cY = self.pY + (y3 - self.pY) /2 # Smooth out the mouse y movement
 
                 pydirectinput.moveTo(int(cX), int(cY))  #Move the mouse using pydirectinput
                 self.pX, self.pY = cX, cY  # Save the current x and y values
 
-            if finger[1] == 0 and finger[0] == 1:  # Checks to see if the pointer finger is down and the thumb finger is up
+            if finger[1] == 0 and finger[0] == 1:  # Check if the pointer finger is down and the thumb finger is up
                 pydirectinput.rightClick()
                 
         return

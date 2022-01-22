@@ -86,8 +86,8 @@ class MainWindow(Frame):
         for i in self.keys:
             param_string += i + " "
 
-        os.system(f"python ./Game/startGameController.py {param_string}") #Bring window back to the front
-        self.window.wm_attributes("-topmost", 1)
+        os.system(f"python ./Game/startGameController.py {param_string}") 
+        self.window.wm_attributes("-topmost", 1) #Bring window back to the front
 
     def move_app(self,e):
         self.window.geometry(f'+{e.x_root}+{e.y_root}')

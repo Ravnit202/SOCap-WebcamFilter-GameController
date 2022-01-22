@@ -13,7 +13,11 @@ def main():
     cap = cv2.VideoCapture(0)
     saved_choice = None
     while not kb.is_pressed('='):
-        _, frame = cap.read() #Read the current frame
+        ret, frame = cap.read() #Read the current frame
+
+        #Checks and skips empty frames
+        if not ret:
+             continue
 
         frame = cv2.flip(frame, 1) 
 

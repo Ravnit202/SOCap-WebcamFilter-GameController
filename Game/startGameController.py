@@ -7,7 +7,7 @@ import sys
 
 
 def main():
-    if len(sys.argv) >= 1:
+    if len(sys.argv) > 1:
         keys = []
         for i in sys.argv[1:]:
             keys.append(i)
@@ -18,9 +18,13 @@ def main():
     finger = FingerDetector()
     cap = cv2.VideoCapture(0)
     while not kb.is_pressed('='):
-        
+
+        ret, frame = cap.read() #Read the current frame
+
         choice = None
-        _, frame = cap.read()
+        #Check for and skip empty frames
+        if not ret:
+             continue
 
         #frame = cv2.flip(frame, 1)
         
