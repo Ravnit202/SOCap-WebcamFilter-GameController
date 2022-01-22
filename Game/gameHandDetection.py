@@ -5,15 +5,21 @@ import numpy as np
 class HandDetection:
 
     def __init__(self, joint_list=[[4,8]], keys = ['q','w','e','r','f','d']):
+        """
+        Initialize all objects
+        """
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_drawing_styles = mp.solutions.drawing_styles
         self.mp_hands = mp.solutions.hands
         self.joint_list = joint_list 
         self.choice = None
         self.keys = keys
-    
-    def draw_left_hand_values(self, image, hand, joint_list):
 
+
+    def draw_left_hand_values(self, image, hand, joint_list):
+        """
+        Draws values onto Left hand
+        """
         j1 = False
         j2 = False
         j3 = False
@@ -43,7 +49,9 @@ class HandDetection:
 
 
     def label_hand(self, index, hand, results):
-
+        """
+        Label the hand with all landmarks
+        """
         output = None
         for _, classification in enumerate(results.multi_handedness):
             if classification.classification[0].index == index:
@@ -63,13 +71,22 @@ class HandDetection:
         return output
     
     def updateChoice(self, choice):
+        """
+        Update the current choice
+        """
         self.choice = choice
  
     def getChoice(self):
+        """
+        Get the current choice
+        """
         return self.choice
 
     def detect(self, frame):
-        with self.mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) as hands: 
+        """
+        Detect the hand motion and process the image
+        """
+        with self.mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) as hands:
                 # BGR 2 RGB
                 image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 

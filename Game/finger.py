@@ -10,6 +10,9 @@ class FingerDetector:
     cX, cY = 0, 0 
 
     def __init__(self):
+        """
+        Initialize all objects
+        """
         #Load the mediapipe libraries/solutions
         self.initHand = mediapipe.solutions.hands
         self.mainHand = self.initHand.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
@@ -19,6 +22,9 @@ class FingerDetector:
         self.img = None
 
     def handLandmarks(self, colorImg):
+        """
+        Detect the hand landmarks
+        """
         landmarkList = []
 
         landmarkPositions = self.mainHand.process(colorImg)  # Process the given image
@@ -35,6 +41,9 @@ class FingerDetector:
         return landmarkList
 
     def fingers(self, landmarks):
+        """
+        Check the action of the fingers
+        """
         fingerTips = []
         tipIds = [4, 8, 12, 16, 20]  #Values for each fingertip
         
@@ -55,6 +64,9 @@ class FingerDetector:
 
 
     def fingerDetection(self, frame):
+        """
+        Detect the fingers positions through the frame
+        """
         frame = cv2.flip(frame, 1)
         self.img = frame
         imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Changes the format of the frames from BGR to RGB

@@ -6,6 +6,9 @@ import numpy as np
 class HandDetection:
 
     def __init__(self, joint_list=[[4,8]]):
+        """
+        Initialize all objects
+        """
         #Load mediapipe libraries/solutions
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_drawing_styles = mp.solutions.drawing_styles
@@ -14,6 +17,9 @@ class HandDetection:
         self.choice = None
 
     def draw_hand_values(self, image, results, joint_list):
+        """
+        Go through and draw the hand values
+        """
         landmarks = results.multi_hand_landmarks
         #Loop through each hand
         for num, hand in enumerate(landmarks):
@@ -45,6 +51,9 @@ class HandDetection:
         return [j1, j2, j3, j4]
 
     def get_label(self, index, hand, results):
+        """
+        Check which hand is being detected, and label the hand
+        """
         output = None
         #Determine which hand is being seen 
         for _, classification in enumerate(results.multi_handedness):
@@ -63,12 +72,21 @@ class HandDetection:
         return output
 
     def updateChoice(self, choice):
+        """
+        Update the current choice
+        """
         self.choice = choice
  
     def getChoice(self):
+        """
+        Get the current choice
+        """
         return self.choice
 
     def detect(self, frame):
+        """
+        Detect the hand motion and process the image, then updating the choice of filter
+        """
         with self.mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) as hands: 
                 # BGR 2 RGB
                 image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -109,6 +127,3 @@ class HandDetection:
                     self.updateChoice('boxFilter')
                 elif vals[3] is True:
                     self.updateChoice('desatureBackground')
-                #else:
-                #    self.updateChoice('None')
-

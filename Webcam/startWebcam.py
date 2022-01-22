@@ -5,6 +5,9 @@ import cv2
 
 
 def main():
+    """
+    Main method to run when the Webcam button is selected
+    """
     #Setup both hand detection and finger detection classes
     hand_detect = HandDetection(joint_list=[[4,8],[4,12],[4,16],[4,20]])
     wb_effect = WebcamEffects()

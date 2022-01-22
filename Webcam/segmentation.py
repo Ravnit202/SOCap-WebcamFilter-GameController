@@ -10,6 +10,9 @@ background_folder = './images/backgrounds'
 class WebcamEffects:
 
     def __init__(self, bg_img=None, blur=0.95, thresh=0.3, method = None):
+        """
+        Initialize all objects
+        """
         #load mediapipe libraries/solutions
         self.mp_selfie_segmentation = mp.solutions.selfie_segmentation
         self.segment = self.mp_selfie_segmentation.SelfieSegmentation(0)
@@ -30,7 +33,9 @@ class WebcamEffects:
         self.bg_img_index = 1
 
     def applyFilter(self, image, background_image = 255, blur = 95, threshold = 0.35, method='changeBackground'):
-
+        """
+        Applying all the different webcam filters
+        """
         # Convert the image from BGR to RGB
         RGB_img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -82,10 +87,15 @@ class WebcamEffects:
         return output_image, (binary_mask_3 * 255).astype('uint8')
 
     def updateMethod(self, new_method):
+        """
+        Update the current method
+        """
         self.method = new_method 
 
     def Capture(self, frame, choice):
-
+        """
+        Capturing the background of the frame
+        """
         # Change the background of the frame.
         output_frame,_ = self.applyFilter(frame, background_image = background_images[self.bg_img_index % len(background_images)],
                                             threshold = 0.40, method=choice)

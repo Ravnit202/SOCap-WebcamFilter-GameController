@@ -7,6 +7,9 @@ import sys
 
 
 def main():
+    """
+    Main method to run when the game button is selected
+    """
     if len(sys.argv) > 1:
         keys = []
         for i in sys.argv[1:]:
@@ -26,8 +29,6 @@ def main():
         if not ret:
              continue
 
-        #frame = cv2.flip(frame, 1)
-        
         hand_detect.detect(frame)
         finger.fingerDetection(frame)
         choice = hand_detect.getChoice()
